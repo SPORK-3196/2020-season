@@ -7,13 +7,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.hal.PDPJNI;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Drivetrain;
 
 public class DriveWithJoystick extends CommandBase {
-  private final Drivetrain drivetrain; 
+  private final Drivetrain drivetrain;
   
   /**
    * Creates a new DriveWithJoystick.
@@ -35,7 +36,12 @@ public class DriveWithJoystick extends CommandBase {
     double rotation = Robot.controllerDrive.getX(Hand.kLeft);
     double speed = Robot.controllerDrive.getY(Hand.kLeft);
 
-    drivetrain.drivetrain.arcadeDrive(speed*-0.7, rotation*0.7);
+    drivetrain.drivetrain.arcadeDrive(speed*-1.0, rotation*0.7);
+
+    drivetrain.current0.setDouble(Robot.pdp.getCurrent(0));
+    drivetrain.current1.setDouble(Robot.pdp.getCurrent(1));
+    drivetrain.current2.setDouble(Robot.pdp.getCurrent(2));
+    drivetrain.current3.setDouble(Robot.pdp.getCurrent(3));
 
     boolean cool = Robot.controllerDrive.getAButton();
     drivetrain.driveCooler.set(cool);
