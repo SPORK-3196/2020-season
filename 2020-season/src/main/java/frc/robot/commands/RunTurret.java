@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Turret;
+import com.revrobotics.ControlType;
 
 public class RunTurret extends CommandBase {
 
@@ -28,6 +29,10 @@ public class RunTurret extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    turret.hoodPID.setP(0.03);
+    turret.hoodPID.setI(0.0);
+    turret.hoodPID.setD(0.0);
+    turret.hoodPID.setOutputRange(-0.3, 0.3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,12 +42,23 @@ public class RunTurret extends CommandBase {
     double rightTrigger = Robot.controllerSecondary.getTriggerAxis(Hand.kRight);
     double leftX = Robot.controllerSecondary.getX(Hand.kLeft);
   
-    turret.hood.set(0.3*rightY);
-    turret.flywheel.set(0.8*rightTrigger);
-    turret.turret.set(0.5*leftX);
+    double hoodValue = turret.hood.getEncoder().getPosition();
+    turret.hoodPos.setDouble(hoodValue);
+    turret.hoodPID.setP(turret.hoodP.getDouble(0.0));
+    turret.hoodPID.setI(turret.hoodI.getDouble(0.0));
+    turret.hoodPID.setD(turret.hoodD.getDouble(0.0));
 
-  
-  
+
+    if(Robot.controllerSecondary.getAButton()) {
+      turret.hoodPID.setReference(10.0, ControlType.kPosition);
+    } else {
+      //turret.hoodPID.
+      turret.hood.set(-0.3*rightY);
+    }
+    
+    
+    turret.flywheel.set(-0.8*rightTrigger);
+    turret.turret.set(0.5*leftX);
   }
 
   // Called once the command ends or is interrupted.
