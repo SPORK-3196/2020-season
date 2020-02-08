@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Index;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class RunIndex extends CommandBase {
 
@@ -29,20 +30,25 @@ public class RunIndex extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    DigitalInput sensor0 = new DigitalInput(0);
+    DigitalInput sensor1 = new DigitalInput(1);
+    DigitalInput sensor2 = new DigitalInput(2);
+    DigitalInput sensor3 = new DigitalInput(3);
+    DigitalInput sensor4 = new DigitalInput(4);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    double leftX = Robot.controllerSecondary.getX(Hand.kLeft);
-    if(leftX > -0.05 && leftX < 0.05) leftX = 0.0;
+    double leftY = Robot.controllerSecondary.getY(Hand.kLeft);
+    if(leftY > -0.05 && leftY < 0.05) leftY = 0.0;
 
     double rightX = Robot.controllerSecondary.getX(Hand.kRight);
     if(rightX > -0.05 && rightX < 0.05) rightX = 0.0;
 
     index.firstStage.set(rightX);
-    index.secondStage.set(leftX);
+    index.secondStage.set(leftY);
 
   }
 
