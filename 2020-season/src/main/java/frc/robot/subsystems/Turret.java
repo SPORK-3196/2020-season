@@ -7,18 +7,19 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANPIDController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANPIDController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.Robot;
 
-
-public class Turret extends SubsystemBase {
+public class Turret extends PIDSubsystem {
 
   public WPI_TalonSRX flywheel1 = new WPI_TalonSRX(5);
   public WPI_VictorSPX flywheel2 = new WPI_VictorSPX(6);
@@ -38,11 +39,26 @@ public class Turret extends SubsystemBase {
    * Creates a new Turret.
    */
   public Turret() {
-
+    super(
+        // The PIDController used by the subsystem
+        new PIDController(0.005, 0.0, 0.0004));
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void useOutput(double output, double setpoint) {
+    // Use the output here
+    if(output < -0.3) {
+      output = -0.3;
+    }
+    if(output > 0.3) {
+      output = 0.3;
+    }
+    turret.set(-output);
+  }
+
+  @Override
+  public double getMeasurement() {
+    // Return the process variable measurement here
+    return Robot.camX;
   }
 }
