@@ -26,6 +26,7 @@ public class Index extends SubsystemBase {
   boolean waiting = false;
   public boolean lastSensor0Value = false;
   boolean lastSensor1Value = false;
+  boolean lastSensor5Value = false;
 
   public static NetworkTableEntry counter_D = Shuffleboard.getTab("Default").add("Index", 0).getEntry();
   public static NetworkTableEntry waiting_D = Shuffleboard.getTab("Default").add("Waiting", false).getEntry();
@@ -41,6 +42,7 @@ public class Index extends SubsystemBase {
     waiting = false;
     lastSensor0Value = false;
     lastSensor1Value = false;
+    lastSensor5Value = false;
   }
 
   public void index() {
@@ -56,7 +58,7 @@ public class Index extends SubsystemBase {
         waiting = false;
         firstStage.set(0.0);
         secondStage.set(0.0);
-      } else if((counter == 5) && getSensorValue(3)) {
+      } else if((counter == 5) && !getSensorValue(5) && lastSensor5Value) {
         waiting = false;
         firstStage.set(0.0);
         secondStage.set(0.0);
@@ -68,6 +70,7 @@ public class Index extends SubsystemBase {
 
     lastSensor0Value = getSensorValue(0);
     lastSensor1Value = getSensorValue(1);
+    lastSensor5Value = getSensorValue(5);
     counter_D.setNumber(counter);
     waiting_D.setBoolean(waiting);
   }
