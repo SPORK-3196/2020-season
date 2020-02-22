@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -18,8 +19,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class Index extends SubsystemBase {
 
-  public CANSparkMax firstStage = new CANSparkMax(9, MotorType.kBrushless);
-  public CANSparkMax secondStage = new CANSparkMax(10, MotorType.kBrushless);
+  public CANSparkMax intake = new CANSparkMax(5, MotorType.kBrushless);
+  public CANSparkMax firstStage = new CANSparkMax(6, MotorType.kBrushless);
+  public CANSparkMax secondStage = new CANSparkMax(7, MotorType.kBrushless);
 
   public static DigitalInput[] sensor = new DigitalInput[10];
   int counter = 0;
@@ -45,6 +47,26 @@ public class Index extends SubsystemBase {
     lastSensor5Value = false;
   }
 
+  public void runMotors() {
+    firstStage.set(0.4);
+    secondStage.set(0.45);
+  }
+
+  public void stopMotors() {
+    firstStage.set(0.0);
+    secondStage.set(0.0);
+  }
+
+  public void runIntake() {
+    if(Robot.controllerSecondary.getAButton()) {
+      intake.set(0.8);
+    }
+  }
+
+  public void stopIntake() {
+    intake.set(0.0);
+  }
+
   public void index() {
     counter++;
     waiting = true;
@@ -52,20 +74,18 @@ public class Index extends SubsystemBase {
 
   public void run() {
     if(waiting) {
-      firstStage.set(0.4);
-      secondStage.set(0.45);
+      runMotors();
+      stopIntake();
       if((counter < 5) && (!lastSensor1Value) && getSensorValue(1)) {
         waiting = false;
-        firstStage.set(0.0);
-        secondStage.set(0.0);
+        stopMotors();
       } else if((counter == 5) && !getSensorValue(5) && lastSensor5Value) {
         waiting = false;
-        firstStage.set(0.0);
-        secondStage.set(0.0);
+        stopMotors();
       }
     } else {
-      firstStage.set(0.0);
-      secondStage.set(0.0);
+      stopMotors();
+      runIntake();
     }
 
     lastSensor0Value = getSensorValue(0);

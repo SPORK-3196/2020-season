@@ -29,6 +29,8 @@ public class RunTurret extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    turret.flywheel2.follow(turret.flywheel);
+
     turret.hoodPID.setP(0.03);
     turret.hoodPID.setI(0.0);
     turret.hoodPID.setD(0.0);
@@ -48,13 +50,15 @@ public class RunTurret extends CommandBase {
     turret.hoodPID.setI(turret.hoodI.getDouble(0.0));
     turret.hoodPID.setD(turret.hoodD.getDouble(0.0));
 
+    if(Robot.controllerSecondary.getBumper(Hand.kRight)) {
+      turret.flywheel.set(0.8);
+    }
 
-    if(Robot.controllerSecondary.getAButton()) {
+    if(Robot.controllerSecondary.getXButton()) {
       turret.hoodPID.setReference(10.0, ControlType.kPosition);
-      turret.setSetpoint(320.0);
-      turret.enable();
+      //turret.setSetpoint(320.0);
+      //turret.enable();
     } else {
-      //turret.hoodPID.
       turret.hood.set(-0.3*rightY);
       turret.disable();
       turret.turret.set(0.5*leftX);
