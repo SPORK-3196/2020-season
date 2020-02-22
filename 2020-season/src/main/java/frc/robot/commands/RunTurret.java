@@ -52,7 +52,13 @@ public class RunTurret extends CommandBase {
 
     if(Robot.controllerSecondary.getBumper(Hand.kRight)) {
       turret.flywheel.set(0.8);
+    } else {
+      turret.flywheel.set(0.0);
     }
+
+    turret.flywheelSpeedDashboard.setDouble(turret.flywheel.getSelectedSensorVelocity());
+
+
 
     if(Robot.controllerSecondary.getXButton()) {
       turret.hoodPID.setReference(10.0, ControlType.kPosition);
@@ -63,9 +69,6 @@ public class RunTurret extends CommandBase {
       turret.disable();
       turret.turret.set(0.5*leftX);
     }
-    
-    
-    turret.flywheel.set(-0.8*rightTrigger);
   }
 
   // Called once the command ends or is interrupted.
