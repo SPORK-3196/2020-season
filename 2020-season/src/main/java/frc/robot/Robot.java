@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,6 +32,15 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private UsbCamera cam0;
+  private SerialPort cam0_ser;
+
+  public static double camX = 320.0;
+  public static double camY = 0.0;
+
+  public NetworkTableEntry camXDashboard = Shuffleboard.getTab("Default").add("Camera X", 160.0).getEntry();
+  public NetworkTableEntry camYDashboard = Shuffleboard.getTab("Default").add("Camera Y", 0.0).getEntry();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,6 +50,14 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    cam0 = CameraServer.getInstance().startAutomaticCapture();
+
+    try {
+      cam0_ser = new SerialPort(115200, SerialPort.Port.kUSB);
+    } catch(Exception e) {
+      System.out.println(e.toString());
+    }
   }
 
   /**
@@ -52,6 +74,30 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    String data = "";
+    if(cam0_ser != null) {
+      data = cam0_ser.readString();
+    }
+    if(!data.equals("")) {
+      //System.out.println(data);
+      try {
+        String numData = data.substring(32, data.length() - 2);
+
+        int commaIndex = numData.indexOf(",");
+        String xStr = numData.substring(0,commaIndex);
+        String yStr = numData.substring(commaIndex+1);
+
+        camX = Double.parseDouble(xStr);
+        camY = Double.parseDouble(yStr);
+        //System.out.println(camX);
+      } catch(Exception e) {
+        System.out.println(e);
+      }
+    }
+
+    camXDashboard.setDouble(camX);
+    camYDashboard.setDouble(camY);
   }
 
   /**

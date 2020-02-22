@@ -13,6 +13,8 @@ import frc.robot.commands.DriveWithJoystick;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.RunIndex;
 import frc.robot.subsystems.Index;
+import frc.robot.commands.RunTurret;
+import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -25,9 +27,11 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain drivetrain = new Drivetrain();
   private final Index index = new Index();
+  private final Turret turret = new Turret();
 
   private final DriveWithJoystick driveWithJoystick = new DriveWithJoystick(drivetrain);
   private final RunIndex runIndex = new RunIndex(index);
+  private final RunTurret runTurret = new RunTurret(turret);
 
 
   /**
@@ -38,6 +42,7 @@ public class RobotContainer {
     configureButtonBindings();
     drivetrain.setDefaultCommand(driveWithJoystick);
     index.setDefaultCommand(runIndex);
+    turret.setDefaultCommand(runTurret);
   }
 
   /**
