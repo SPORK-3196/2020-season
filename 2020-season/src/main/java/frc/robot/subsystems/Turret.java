@@ -21,13 +21,13 @@ import frc.robot.Robot;
 
 public class Turret extends PIDSubsystem {
 
-  public WPI_TalonSRX flywheel1 = new WPI_TalonSRX(5);
-  public WPI_VictorSPX flywheel2 = new WPI_VictorSPX(6);
-  public SpeedControllerGroup flywheel = new SpeedControllerGroup(flywheel1, flywheel2);
+  public WPI_TalonSRX flywheel = new WPI_TalonSRX(9);
+  public WPI_VictorSPX flywheel2 = new WPI_VictorSPX(10);
+  //public SpeedControllerGroup flywheel = new SpeedControllerGroup(flywheel1, flywheel2);
 
-  public WPI_TalonSRX turret = new WPI_TalonSRX(7);
+  public WPI_TalonSRX turret = new WPI_TalonSRX(8);
 
-  public CANSparkMax hood = new CANSparkMax(8, MotorType.kBrushless);
+  public CANSparkMax hood = new CANSparkMax(11, MotorType.kBrushless);
   public CANPIDController hoodPID = hood.getPIDController();
   
   public NetworkTableEntry hoodPos = Shuffleboard.getTab("Default").add("Hood Position", 0.0).getEntry();
