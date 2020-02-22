@@ -21,12 +21,11 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public class Robot extends TimedRobot {
   public static XboxController controllerDrive = new XboxController(0);
+  public static XboxController controllerSecondary = new XboxController(1);
 
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
-  public static XboxController controllerSecondary = new XboxController(1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
