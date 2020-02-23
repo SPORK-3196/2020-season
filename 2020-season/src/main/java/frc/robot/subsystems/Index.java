@@ -49,7 +49,7 @@ public class Index extends SubsystemBase {
 
   public void runMotors() {
     firstStage.set(0.4);
-    secondStage.set(0.45);
+    secondStage.set(0.3);
   }
 
   public void stopMotors() {
@@ -60,6 +60,8 @@ public class Index extends SubsystemBase {
   public void runIntake() {
     if(Robot.controllerSecondary.getAButton()) {
       intake.set(0.8);
+    } else {
+      intake.set(0.0);
     }
   }
 
@@ -86,6 +88,14 @@ public class Index extends SubsystemBase {
     } else {
       stopMotors();
       runIntake();
+    }
+
+    if(Robot.controllerSecondary.getXButton()) {
+      if(Robot.flywheelVel > 254) {
+        runMotors();
+      } else {
+        stopMotors();
+      }
     }
 
     lastSensor0Value = getSensorValue(0);

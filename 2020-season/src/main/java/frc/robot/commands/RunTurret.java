@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Turret;
+
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.revrobotics.ControlType;
 
 public class RunTurret extends CommandBase {
@@ -29,7 +31,9 @@ public class RunTurret extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    turret.flywheel2.follow(turret.flywheel);
+    turret.flywheel2.follow(turret.flywheel1);
+    turret.flywheel1.setInverted(true);
+    turret.flywheel2.setInverted(InvertType.FollowMaster);
 
     turret.hoodPID.setP(0.03);
     turret.hoodPID.setI(0.0);
@@ -41,7 +45,6 @@ public class RunTurret extends CommandBase {
   @Override
   public void execute() {
     double rightY = Robot.controllerSecondary.getY(Hand.kRight);
-    double rightTrigger = Robot.controllerSecondary.getTriggerAxis(Hand.kRight);
     double leftX = Robot.controllerSecondary.getX(Hand.kLeft);
   
     double hoodValue = turret.hood.getEncoder().getPosition();
@@ -50,24 +53,23 @@ public class RunTurret extends CommandBase {
     turret.hoodPID.setI(turret.hoodI.getDouble(0.0));
     turret.hoodPID.setD(turret.hoodD.getDouble(0.0));
 
+    Robot.flywheelVel = turret.flywheel1.getSelectedSensorVelocity();
     if(Robot.controllerSecondary.getBumper(Hand.kRight)) {
-      turret.flywheel.set(0.8);
+      turret.flywheel1.set(0.8);
     } else {
-      turret.flywheel.set(0.0);
+      turret.flywheel1.set(0.0);
     }
 
-    turret.flywheelSpeedDashboard.setDouble(turret.flywheel.getSelectedSensorVelocity());
-
-
-
     if(Robot.controllerSecondary.getXButton()) {
-      turret.hoodPID.setReference(10.0, ControlType.kPosition);
+      turret.hoodPID.setReference(13.0, ControlType.kPosition);
       //turret.setSetpoint(320.0);
       //turret.enable();
+      turret.turret.set(0.7*leftX);
     } else {
-      turret.hood.set(-0.3*rightY);
+      turret.hoodPID.setReference(0.05, ControlType.kPosition);
+      //turret.hood.set(-0.3*rightY);
       turret.disable();
-      turret.turret.set(0.5*leftX);
+      turret.turret.set(0.7*leftX);
     }
   }
 

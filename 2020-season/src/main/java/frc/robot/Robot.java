@@ -38,8 +38,12 @@ public class Robot extends TimedRobot {
   public static double camX = 320.0;
   public static double camY = 0.0;
 
+  public static int flywheelVel = 0;
+
   public NetworkTableEntry camXDashboard = Shuffleboard.getTab("Default").add("Camera X", 160.0).getEntry();
   public NetworkTableEntry camYDashboard = Shuffleboard.getTab("Default").add("Camera Y", 0.0).getEntry();
+
+  public NetworkTableEntry flywheelVelocityDashboard = Shuffleboard.getTab("Default").add("Flywheel Velocity", 0.0).getEntry();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -98,6 +102,7 @@ public class Robot extends TimedRobot {
 
     camXDashboard.setDouble(camX);
     camYDashboard.setDouble(camY);
+    flywheelVelocityDashboard.setDouble(flywheelVel);
   }
 
   /**
