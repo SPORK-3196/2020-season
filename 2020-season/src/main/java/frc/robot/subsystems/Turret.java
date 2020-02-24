@@ -35,6 +35,8 @@ public class Turret extends PIDSubsystem {
   public NetworkTableEntry hoodI = Shuffleboard.getTab("Default").add("Hood I", 0.0).getEntry();
   public NetworkTableEntry hoodD = Shuffleboard.getTab("Default").add("Hood D", 0.15).getEntry();
 
+  public NetworkTableEntry turretEncoderDashboard = Shuffleboard.getTab("Default").add("Turret Position", 0).getEntry();
+
   /**
    * Creates a new Turret.
    */

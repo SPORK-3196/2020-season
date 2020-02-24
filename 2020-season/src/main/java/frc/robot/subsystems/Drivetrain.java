@@ -7,28 +7,55 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.ArrayList;
+import com.ctre.phoenix.music.Orchestra;
 
 public class Drivetrain extends SubsystemBase {
 
-  WPI_TalonFX frontLeft = new WPI_TalonFX(1);
-  WPI_TalonFX rearLeft = new WPI_TalonFX(2);
-  WPI_TalonFX frontRight = new WPI_TalonFX(3);
-  WPI_TalonFX rearRight = new WPI_TalonFX(4);
+  public WPI_TalonFX frontLeft = new WPI_TalonFX(1);
+  public WPI_TalonFX rearLeft = new WPI_TalonFX(2);
+  public WPI_TalonFX frontRight = new WPI_TalonFX(3);
+  public WPI_TalonFX rearRight = new WPI_TalonFX(4);
 
   SpeedControllerGroup left = new SpeedControllerGroup(frontLeft, rearLeft);
   SpeedControllerGroup right = new SpeedControllerGroup(frontRight, rearRight);
 
-  public DifferentialDrive drivetrian = new DifferentialDrive(left, right);
+  public DifferentialDrive drivetrain = new DifferentialDrive(left, right);
+
+  //public Orchestra orchestra;
+
+  public Solenoid driveCooler = new Solenoid(50, 1);
+
+  public static NetworkTableEntry[] falconTempDashboard = new NetworkTableEntry[4];
 
   /**
    * Creates a new Drivetrain.
    */
   public Drivetrain() {
+    left.setInverted(true);
 
+    falconTempDashboard[0] = Shuffleboard.getTab("Default").add("FL Falcon Temp", 0.0).getEntry();
+    falconTempDashboard[1] = Shuffleboard.getTab("Default").add("RL Falcon Temp", 0.0).getEntry();
+    falconTempDashboard[2] = Shuffleboard.getTab("Default").add("FR Falcon Temp", 0.0).getEntry();
+    falconTempDashboard[3] = Shuffleboard.getTab("Default").add("RR Falcon Temp", 0.0).getEntry();
+
+    /*ArrayList<TalonFX> fx_s = new ArrayList<TalonFX>();
+    fx_s.add(frontLeft);
+    //fx_s.add(rearLeft);
+    fx_s.add(frontRight);
+    //fx_s.add(rearRight);
+
+    orchestra = new Orchestra(fx_s);*/
   }
 
   @Override

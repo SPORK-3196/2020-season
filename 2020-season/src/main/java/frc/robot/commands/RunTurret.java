@@ -60,17 +60,19 @@ public class RunTurret extends CommandBase {
       turret.flywheel1.set(0.0);
     }
 
-    if(Robot.controllerSecondary.getXButton()) {
+    if(Robot.controllerSecondary.getBButton()) {
       turret.hoodPID.setReference(13.0, ControlType.kPosition);
       //turret.setSetpoint(320.0);
       //turret.enable();
       turret.turret.set(0.7*leftX);
     } else {
-      turret.hoodPID.setReference(0.05, ControlType.kPosition);
+      turret.hoodPID.setReference(0.1, ControlType.kPosition);
       //turret.hood.set(-0.3*rightY);
       turret.disable();
       turret.turret.set(0.7*leftX);
     }
+
+    turret.turretEncoderDashboard.setDouble(turret.turret.getSelectedSensorPosition());
   }
 
   // Called once the command ends or is interrupted.

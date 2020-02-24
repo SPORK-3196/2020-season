@@ -13,7 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.DigitalInput;
-
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
@@ -22,6 +22,11 @@ public class Index extends SubsystemBase {
   public CANSparkMax intake = new CANSparkMax(5, MotorType.kBrushless);
   public CANSparkMax firstStage = new CANSparkMax(6, MotorType.kBrushless);
   public CANSparkMax secondStage = new CANSparkMax(7, MotorType.kBrushless);
+
+  public static Solenoid intakeSolenoid1 = new Solenoid(50, 0);
+  public static Solenoid intakeSolenoid2 = new Solenoid(50, 7);
+
+  public boolean intakeOut = false;
 
   public static DigitalInput[] sensor = new DigitalInput[10];
   int counter = 0;
@@ -58,7 +63,9 @@ public class Index extends SubsystemBase {
   }
 
   public void runIntake() {
-    if(Robot.controllerSecondary.getAButton()) {
+    if(Robot.controllerSecondary.getXButton()) {
+      intake.set(-0.5);
+    } else if(intakeOut) {
       intake.set(0.8);
     } else {
       intake.set(0.0);
@@ -90,7 +97,7 @@ public class Index extends SubsystemBase {
       runIntake();
     }
 
-    if(Robot.controllerSecondary.getXButton()) {
+    if(Robot.controllerSecondary.getBButton()) {
       if(Robot.flywheelVel > 254) {
         runMotors();
       } else {

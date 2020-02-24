@@ -30,6 +30,8 @@ public class RunIndex extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Index.intakeSolenoid1.set(false);
+    Index.intakeSolenoid2.set(false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,6 +54,12 @@ public class RunIndex extends CommandBase {
 
     if(Robot.controllerSecondary.getYButton()) {
       index.reset();
+    }
+
+    if(Robot.controllerSecondary.getAButtonPressed()) {
+      index.intakeOut = !index.intakeOut;
+      Index.intakeSolenoid1.set(index.intakeOut);
+      Index.intakeSolenoid2.set(index.intakeOut);
     }
 
     index.run();

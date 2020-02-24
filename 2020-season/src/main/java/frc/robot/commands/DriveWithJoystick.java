@@ -28,7 +28,7 @@ public class DriveWithJoystick extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.drivetrian.setDeadband(0.08);
+    drivetrain.drivetrain.setDeadband(0.08);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,7 +37,43 @@ public class DriveWithJoystick extends CommandBase {
     double leftX = Robot.controllerDrive.getX(Hand.kLeft);
     double leftY = Robot.controllerDrive.getY(Hand.kLeft);
 
-    drivetrain.drivetrian.arcadeDrive(leftX * 0.8, leftY * 0.8);
+    drivetrain.drivetrain.arcadeDrive(leftX * 0.8, leftY * 0.8);
+
+    if(Robot.controllerDrive.getAButton()) {
+      drivetrain.driveCooler.set(true);
+    } else {
+      drivetrain.driveCooler.set(false);
+    }
+
+    /*if(Robot.controllerDrive.getYButtonPressed()) {
+      if(drivetrain.orchestra.isPlaying()) {
+        drivetrain.orchestra.stop();
+      } else {
+        drivetrain.orchestra.loadMusic("Thomas.chrp");
+        drivetrain.orchestra.play();
+      }
+    }
+    if(Robot.controllerDrive.getXButtonPressed()) {
+      if(drivetrain.orchestra.isPlaying()) {
+        drivetrain.orchestra.stop();
+      } else {
+        drivetrain.orchestra.loadMusic("Crab.chrp");
+        drivetrain.orchestra.play();
+      }
+    }
+    if(Robot.controllerDrive.getBButtonPressed()) {
+      if(drivetrain.orchestra.isPlaying()) {
+        drivetrain.orchestra.stop();
+      } else {
+        drivetrain.orchestra.loadMusic("Sandstorm.chrp");
+        drivetrain.orchestra.play();
+      }
+    }*/
+
+    Drivetrain.falconTempDashboard[0].setDouble(drivetrain.frontLeft.getTemperature());
+    Drivetrain.falconTempDashboard[1].setDouble(drivetrain.rearLeft.getTemperature());
+    Drivetrain.falconTempDashboard[2].setDouble(drivetrain.frontRight.getTemperature());
+    Drivetrain.falconTempDashboard[3].setDouble(drivetrain.rearRight.getTemperature());
   }
 
   // Called once the command ends or is interrupted.
