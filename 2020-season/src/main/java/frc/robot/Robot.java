@@ -42,6 +42,8 @@ public class Robot extends TimedRobot {
   public static double camY = 0.0;
 
   public static int flywheelVel = 0;
+  public static int lastFlywheelVel = 0;
+  public static int deltaFlywheelVel = 0;
 
   public NetworkTableEntry camXDashboard = Shuffleboard.getTab("Default").add("Camera X", 160.0).getEntry();
   public NetworkTableEntry camYDashboard = Shuffleboard.getTab("Default").add("Camera Y", 0.0).getEntry();

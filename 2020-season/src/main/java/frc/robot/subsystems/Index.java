@@ -34,6 +34,7 @@ public class Index extends SubsystemBase {
   public boolean lastSensor0Value = false;
   boolean lastSensor1Value = false;
   boolean lastSensor5Value = false;
+  boolean loaded = false;
 
   public static NetworkTableEntry counter_D = Shuffleboard.getTab("Default").add("Index", 0).getEntry();
   public static NetworkTableEntry waiting_D = Shuffleboard.getTab("Default").add("Waiting", false).getEntry();
@@ -54,7 +55,12 @@ public class Index extends SubsystemBase {
 
   public void runMotors() {
     firstStage.set(0.4);
-    secondStage.set(0.3);
+    secondStage.set(0.4);
+  }
+
+  public void runMotorsShooting() {
+    firstStage.set(0.4);
+    secondStage.set(0.5);
   }
 
   public void stopMotors() {
@@ -64,16 +70,14 @@ public class Index extends SubsystemBase {
 
   public void runIntake() {
     if(Robot.controllerSecondary.getXButton()) {
-      intake.set(-0.5);
+      intake.set(-0.5); // Reverse intake
+    } else if(waiting) {
+      intake.set(0.0); // Run intake slower to avoid indexing problems
     } else if(intakeOut) {
-      intake.set(0.8);
+      intake.set(0.8); // Run intake normally
     } else {
-      intake.set(0.0);
+      intake.set(0.0); // Stop intake because it's retracted
     }
-  }
-
-  public void stopIntake() {
-    intake.set(0.0);
   }
 
   public void index() {
@@ -84,23 +88,37 @@ public class Index extends SubsystemBase {
   public void run() {
     if(waiting) {
       runMotors();
-      stopIntake();
       if((counter < 5) && (!lastSensor1Value) && getSensorValue(1)) {
         waiting = false;
         stopMotors();
       } else if((counter == 5) && !getSensorValue(5) && lastSensor5Value) {
         waiting = false;
+        loaded = true;
         stopMotors();
+        intakeOut = false;
       }
     } else {
       stopMotors();
-      runIntake();
     }
+    runIntake();
+    Index.intakeSolenoid1.set(intakeOut);
+    Index.intakeSolenoid2.set(intakeOut);
 
     if(Robot.controllerSecondary.getBButton()) {
-      if(Robot.flywheelVel > 254) {
-        runMotors();
+      if(Robot.deltaFlywheelVel < -10) {
+        loaded = false;
+      }
+
+      if(Robot.flywheelVel > 254 || !loaded) {
+        runMotorsShooting();
       } else {
+        stopMotors();
+      }
+    }
+
+    if(!loaded) {
+      if(!getSensorValue(5) && lastSensor5Value) {
+        loaded = true;
         stopMotors();
       }
     }

@@ -37,7 +37,7 @@ public class DriveWithJoystick extends CommandBase {
     double leftX = Robot.controllerDrive.getX(Hand.kLeft);
     double leftY = Robot.controllerDrive.getY(Hand.kLeft);
 
-    drivetrain.drivetrain.arcadeDrive(leftX * 0.8, leftY * 0.8);
+    drivetrain.drivetrain.arcadeDrive(leftY * -0.8, leftX * 0.8);
 
     if(Robot.controllerDrive.getAButton()) {
       drivetrain.driveCooler.set(true);

@@ -61,17 +61,19 @@ public class RunTurret extends CommandBase {
     }
 
     if(Robot.controllerSecondary.getBButton()) {
-      turret.hoodPID.setReference(13.0, ControlType.kPosition);
+      turret.hoodPID.setReference(15.0, ControlType.kPosition);
       //turret.setSetpoint(320.0);
       //turret.enable();
       turret.turret.set(0.7*leftX);
     } else {
-      turret.hoodPID.setReference(0.1, ControlType.kPosition);
+      turret.hoodPID.setReference(1.5, ControlType.kPosition);
       //turret.hood.set(-0.3*rightY);
       turret.disable();
       turret.turret.set(0.7*leftX);
     }
 
+    Robot.deltaFlywheelVel = Robot.flywheelVel - Robot.lastFlywheelVel;
+    Robot.lastFlywheelVel = Robot.flywheelVel;
     turret.turretEncoderDashboard.setDouble(turret.turret.getSelectedSensorPosition());
   }
 

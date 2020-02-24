@@ -42,7 +42,7 @@ public class Drivetrain extends SubsystemBase {
    * Creates a new Drivetrain.
    */
   public Drivetrain() {
-    left.setInverted(true);
+    drivetrain.setRightSideInverted(true);
 
     falconTempDashboard[0] = Shuffleboard.getTab("Default").add("FL Falcon Temp", 0.0).getEntry();
     falconTempDashboard[1] = Shuffleboard.getTab("Default").add("RL Falcon Temp", 0.0).getEntry();

@@ -30,6 +30,8 @@ public class RunIndex extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    index.intakeOut = false;
+    index.intake.set(0.0);
     Index.intakeSolenoid1.set(false);
     Index.intakeSolenoid2.set(false);
   }
@@ -58,8 +60,6 @@ public class RunIndex extends CommandBase {
 
     if(Robot.controllerSecondary.getAButtonPressed()) {
       index.intakeOut = !index.intakeOut;
-      Index.intakeSolenoid1.set(index.intakeOut);
-      Index.intakeSolenoid2.set(index.intakeOut);
     }
 
     index.run();
