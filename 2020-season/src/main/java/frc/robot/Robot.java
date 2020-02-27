@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.XboxController;
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  public Compressor compressor = new Compressor(50);
+  //public Compressor compressor = new Compressor(50);
 
   private UsbCamera cam0;
   private SerialPort cam0_ser;
@@ -45,10 +46,16 @@ public class Robot extends TimedRobot {
   public static int lastFlywheelVel = 0;
   public static int deltaFlywheelVel = 0;
 
+  public static boolean shooting = false;
+
+  public static double hoodTarget = 0.0;
+
   public NetworkTableEntry camXDashboard = Shuffleboard.getTab("Default").add("Camera X", 160.0).getEntry();
   public NetworkTableEntry camYDashboard = Shuffleboard.getTab("Default").add("Camera Y", 0.0).getEntry();
 
   public NetworkTableEntry flywheelVelocityDashboard = Shuffleboard.getTab("Default").add("Flywheel Velocity", 0.0).getEntry();
+
+  public NetworkTableEntry hoodTargetDashboard = Shuffleboard.getTab("Default").add("Hood Target", 0.0).getEntry();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -108,6 +115,12 @@ public class Robot extends TimedRobot {
     camXDashboard.setDouble(camX);
     camYDashboard.setDouble(camY);
     flywheelVelocityDashboard.setDouble(flywheelVel);
+
+    double hoodAdjust = controllerSecondary.getY(Hand.kRight);
+    if(hoodAdjust > 0.07 || hoodAdjust < -0.07) {
+      hoodTarget += controllerSecondary.getY(Hand.kRight) * -0.05;
+    }
+    hoodTargetDashboard.setDouble(hoodTarget);
   }
 
   /**

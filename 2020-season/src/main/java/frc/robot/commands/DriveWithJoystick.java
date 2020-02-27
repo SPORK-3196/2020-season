@@ -37,38 +37,10 @@ public class DriveWithJoystick extends CommandBase {
     double leftX = Robot.controllerDrive.getX(Hand.kLeft);
     double leftY = Robot.controllerDrive.getY(Hand.kLeft);
 
-    drivetrain.drivetrain.arcadeDrive(leftY * -0.8, leftX * 0.8);
+    drivetrain.drivetrain.arcadeDrive(leftY * -0.8, leftX * 0.5);
 
-    if(Robot.controllerDrive.getAButton()) {
-      drivetrain.driveCooler.set(true);
-    } else {
-      drivetrain.driveCooler.set(false);
-    }
-
-    /*if(Robot.controllerDrive.getYButtonPressed()) {
-      if(drivetrain.orchestra.isPlaying()) {
-        drivetrain.orchestra.stop();
-      } else {
-        drivetrain.orchestra.loadMusic("Thomas.chrp");
-        drivetrain.orchestra.play();
-      }
-    }
-    if(Robot.controllerDrive.getXButtonPressed()) {
-      if(drivetrain.orchestra.isPlaying()) {
-        drivetrain.orchestra.stop();
-      } else {
-        drivetrain.orchestra.loadMusic("Crab.chrp");
-        drivetrain.orchestra.play();
-      }
-    }
-    if(Robot.controllerDrive.getBButtonPressed()) {
-      if(drivetrain.orchestra.isPlaying()) {
-        drivetrain.orchestra.stop();
-      } else {
-        drivetrain.orchestra.loadMusic("Sandstorm.chrp");
-        drivetrain.orchestra.play();
-      }
-    }*/
+    boolean aButton = Robot.controllerDrive.getAButton();
+    drivetrain.driveCooler.set(aButton);
 
     Drivetrain.falconTempDashboard[0].setDouble(drivetrain.frontLeft.getTemperature());
     Drivetrain.falconTempDashboard[1].setDouble(drivetrain.rearLeft.getTemperature());

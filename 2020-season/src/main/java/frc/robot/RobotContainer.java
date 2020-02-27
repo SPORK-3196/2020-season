@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveWithJoystick;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.commands.RunIndex;
 import frc.robot.subsystems.Index;
 import frc.robot.commands.RunTurret;
@@ -28,10 +29,11 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   private final Index index = new Index();
   private final Turret turret = new Turret();
+  private final Flywheel flywheel = new Flywheel();
 
   private final DriveWithJoystick driveWithJoystick = new DriveWithJoystick(drivetrain);
   private final RunIndex runIndex = new RunIndex(index);
-  private final RunTurret runTurret = new RunTurret(turret);
+  private final RunTurret runTurret = new RunTurret(turret, flywheel);
 
 
   /**

@@ -20,9 +20,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Robot;
 
 public class Turret extends PIDSubsystem {
-
-  public WPI_TalonSRX flywheel1 = new WPI_TalonSRX(9);
-  public WPI_VictorSPX flywheel2 = new WPI_VictorSPX(10);
+  
   //public SpeedControllerGroup flywheel = new SpeedControllerGroup(flywheel1, flywheel2);
 
   public WPI_TalonSRX turret = new WPI_TalonSRX(8);

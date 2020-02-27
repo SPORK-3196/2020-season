@@ -50,15 +50,17 @@ public class RunIndex extends CommandBase {
     index.secondStage.set(-leftY);*/
 
 
-    if(!index.lastSensor0Value && index.getSensorValue(0)){
+    if(!index.lastSensor0Value && index.getSensorValue(0) && !Robot.shooting){
       index.index();
     }
 
-    if(Robot.controllerSecondary.getYButton()) {
+    boolean resetIndex = Robot.controllerSecondary.getXButton();
+    if(resetIndex) {
       index.reset();
     }
 
-    if(Robot.controllerSecondary.getAButtonPressed()) {
+    boolean toggleIntake = Robot.controllerSecondary.getAButtonPressed();
+    if(toggleIntake) {
       index.intakeOut = !index.intakeOut;
     }
 

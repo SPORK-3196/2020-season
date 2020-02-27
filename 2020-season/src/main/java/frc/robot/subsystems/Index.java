@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
@@ -38,7 +39,7 @@ public class Index extends SubsystemBase {
 
   public static NetworkTableEntry counter_D = Shuffleboard.getTab("Default").add("Index", 0).getEntry();
   public static NetworkTableEntry waiting_D = Shuffleboard.getTab("Default").add("Waiting", false).getEntry();
-  
+  public static NetworkTableEntry loaded_D = Shuffleboard.getTab("Default").add("Loaded", false).getEntry();
 
 
   public boolean getSensorValue(int sensorNumber) {
@@ -51,16 +52,17 @@ public class Index extends SubsystemBase {
     lastSensor0Value = false;
     lastSensor1Value = false;
     lastSensor5Value = false;
+    loaded = false;
   }
 
   public void runMotors() {
     firstStage.set(0.4);
-    secondStage.set(0.4);
+    secondStage.set(0.55);
   }
 
   public void runMotorsShooting() {
     firstStage.set(0.4);
-    secondStage.set(0.5);
+    secondStage.set(0.6);
   }
 
   public void stopMotors() {
@@ -69,9 +71,10 @@ public class Index extends SubsystemBase {
   }
 
   public void runIntake() {
-    if(Robot.controllerSecondary.getXButton()) {
+    boolean reverseIndex = Robot.controllerSecondary.getXButton();
+    /*if(reverseIndex) {
       intake.set(-0.5); // Reverse intake
-    } else if(waiting) {
+    } else*/ if(waiting) {
       intake.set(0.0); // Run intake slower to avoid indexing problems
     } else if(intakeOut) {
       intake.set(0.8); // Run intake normally
@@ -91,7 +94,7 @@ public class Index extends SubsystemBase {
       if((counter < 5) && (!lastSensor1Value) && getSensorValue(1)) {
         waiting = false;
         stopMotors();
-      } else if((counter == 5) && !getSensorValue(5) && lastSensor5Value) {
+      } else if(!getSensorValue(5) && lastSensor5Value) {
         waiting = false;
         loaded = true;
         stopMotors();
@@ -104,12 +107,12 @@ public class Index extends SubsystemBase {
     Index.intakeSolenoid1.set(intakeOut);
     Index.intakeSolenoid2.set(intakeOut);
 
-    if(Robot.controllerSecondary.getBButton()) {
-      if(Robot.deltaFlywheelVel < -10) {
+    if(Robot.shooting) {
+      if(Robot.deltaFlywheelVel < -3) {
         loaded = false;
       }
 
-      if(Robot.flywheelVel > 254 || !loaded) {
+      if(Robot.flywheelVel > 269 || !loaded) {
         runMotorsShooting();
       } else {
         stopMotors();
@@ -117,10 +120,17 @@ public class Index extends SubsystemBase {
     }
 
     if(!loaded) {
-      if(!getSensorValue(5) && lastSensor5Value) {
+      if(getSensorValue(5)) {
         loaded = true;
         stopMotors();
       }
+    }
+
+    double expel = Robot.controllerSecondary.getTriggerAxis(Hand.kRight);
+    if(expel > 0.1) {
+      firstStage.set(expel * -0.5);
+      secondStage.set(expel * -0.5);
+      reset();
     }
 
     lastSensor0Value = getSensorValue(0);
@@ -128,6 +138,7 @@ public class Index extends SubsystemBase {
     lastSensor5Value = getSensorValue(5);
     counter_D.setNumber(counter);
     waiting_D.setBoolean(waiting);
+    loaded_D.setBoolean(loaded);
   }
   
   /**

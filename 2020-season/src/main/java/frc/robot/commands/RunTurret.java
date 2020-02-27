@@ -10,31 +10,39 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Turret;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 
 public class RunTurret extends CommandBase {
 
   private final Turret turret;
+  private final Flywheel flywheel;
 
   /**
    * Creates a new RunTurret.
    */
-  public RunTurret(Turret newTurret) {
+  public RunTurret(Turret newTurret, Flywheel newFlywheel) {
     // Use addRequirements() here to declare subsystem dependencies.
     turret = newTurret;
+    flywheel = newFlywheel;
     addRequirements(turret);
+    addRequirements(flywheel);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    turret.flywheel2.follow(turret.flywheel1);
-    turret.flywheel1.setInverted(true);
-    turret.flywheel2.setInverted(InvertType.FollowMaster);
+    flywheel.flywheel2.follow(flywheel.flywheel1);
+    flywheel.flywheel1.setInverted(true);
+    flywheel.flywheel2.setInverted(InvertType.FollowMaster);
 
+    turret.disable();
     turret.hoodPID.setP(0.03);
     turret.hoodPID.setI(0.0);
     turret.hoodPID.setD(0.0);
@@ -44,8 +52,8 @@ public class RunTurret extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rightY = Robot.controllerSecondary.getY(Hand.kRight);
-    double leftX = Robot.controllerSecondary.getX(Hand.kLeft);
+    //double rightY = Robot.controllerSecondary.getY(Hand.kRight);
+    double turretInput = Robot.controllerSecondary.getX(Hand.kLeft);
   
     double hoodValue = turret.hood.getEncoder().getPosition();
     turret.hoodPos.setDouble(hoodValue);
@@ -53,25 +61,40 @@ public class RunTurret extends CommandBase {
     turret.hoodPID.setI(turret.hoodI.getDouble(0.0));
     turret.hoodPID.setD(turret.hoodD.getDouble(0.0));
 
-    Robot.flywheelVel = turret.flywheel1.getSelectedSensorVelocity();
-    if(Robot.controllerSecondary.getBumper(Hand.kRight)) {
-      turret.flywheel1.set(0.8);
+    Robot.flywheelVel = flywheel.flywheel1.getSelectedSensorVelocity();
+
+    boolean spinupFlywheel = Robot.controllerSecondary.getBumper(Hand.kLeft);
+
+    if(spinupFlywheel || Robot.shooting) {
+      flywheel.setSetpoint(270);
+      flywheel.enable();
+      //flywheel.flywheel1.set(0.8);
     } else {
-      turret.flywheel1.set(0.0);
+      flywheel.disable();
     }
 
-    if(Robot.controllerSecondary.getBButton()) {
-      turret.hoodPID.setReference(15.0, ControlType.kPosition);
-      //turret.setSetpoint(320.0);
-      //turret.enable();
-      turret.turret.set(0.7*leftX);
+    boolean shootAgainstWall = Robot.controllerSecondary.getAButton();
+    boolean shootLongRange = Robot.controllerSecondary.getYButton();
+
+    if(shootAgainstWall) {
+      turret.hoodPID.setReference(3.5, ControlType.kPosition);
+      Robot.shooting = true;
+    } else if(shootLongRange) {
+      // 15 is max hood value
+      turret.hoodPID.setReference(Robot.hoodTarget, ControlType.kPosition);
+      Robot.shooting = true;
     } else {
-      turret.hoodPID.setReference(1.5, ControlType.kPosition);
+      turret.hoodPID.setReference(0.25, ControlType.kPosition);
       //turret.hood.set(-0.3*rightY);
-      turret.disable();
-      turret.turret.set(0.7*leftX);
+      //turret.disable();
+      turret.turret.set(0.3*turretInput);
+      Robot.shooting = false;
     }
 
+    if(turret.hood.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
+      turret.hood.getEncoder().setPosition(0.0);
+    }
+    
     Robot.deltaFlywheelVel = Robot.flywheelVel - Robot.lastFlywheelVel;
     Robot.lastFlywheelVel = Robot.flywheelVel;
     turret.turretEncoderDashboard.setDouble(turret.turret.getSelectedSensorPosition());

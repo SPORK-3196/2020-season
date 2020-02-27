@@ -34,7 +34,7 @@ public class Drivetrain extends SubsystemBase {
 
   //public Orchestra orchestra;
 
-  public Solenoid driveCooler = new Solenoid(50, 1);
+  public Solenoid driveCooler = new Solenoid(50, 3);
 
   public static NetworkTableEntry[] falconTempDashboard = new NetworkTableEntry[4];
 
