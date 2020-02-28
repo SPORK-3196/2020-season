@@ -76,6 +76,15 @@ public class RunTurret extends CommandBase {
     boolean shootAgainstWall = Robot.controllerSecondary.getAButton();
     boolean shootLongRange = Robot.controllerSecondary.getYButton();
 
+    int pov = Robot.controllerSecondary.getPOV();
+    if(pov == 0 && Robot.lastPOV != 0) {
+      Robot.manualHoodOffset -= 0.1;
+    } else if(pov == 180 && Robot.lastPOV != 180) {
+      Robot.manualHoodOffset += 0.1;
+    }
+
+    Robot.hoodTarget = (-0.0129 * Robot.camY) + 13.6 + Robot.manualHoodOffset;
+
     if(shootAgainstWall) {
       turret.hoodPID.setReference(3.5, ControlType.kPosition);
       Robot.shooting = true;
@@ -97,6 +106,7 @@ public class RunTurret extends CommandBase {
     
     Robot.deltaFlywheelVel = Robot.flywheelVel - Robot.lastFlywheelVel;
     Robot.lastFlywheelVel = Robot.flywheelVel;
+    Robot.lastPOV = pov;
     turret.turretEncoderDashboard.setDouble(turret.turret.getSelectedSensorPosition());
   }
 

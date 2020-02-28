@@ -59,7 +59,7 @@ public class RunIndex extends CommandBase {
       index.reset();
     }
 
-    boolean toggleIntake = Robot.controllerSecondary.getAButtonPressed();
+    boolean toggleIntake = Robot.controllerSecondary.getBButtonPressed();
     if(toggleIntake) {
       index.intakeOut = !index.intakeOut;
     }
