@@ -42,7 +42,9 @@ public class RunTurret extends CommandBase {
     flywheel.flywheel1.setInverted(true);
     flywheel.flywheel2.setInverted(InvertType.FollowMaster);
 
+    //turret.setSetpoint(1640);
     turret.disable();
+
     turret.hoodPID.setP(0.03);
     turret.hoodPID.setI(0.0);
     turret.hoodPID.setD(0.0);
@@ -53,7 +55,6 @@ public class RunTurret extends CommandBase {
   @Override
   public void execute() {
     //double rightY = Robot.controllerSecondary.getY(Hand.kRight);
-    double turretInput = Robot.controllerSecondary.getX(Hand.kLeft);
   
     double hoodValue = turret.hood.getEncoder().getPosition();
     turret.hoodPos.setDouble(hoodValue);
@@ -96,7 +97,6 @@ public class RunTurret extends CommandBase {
       turret.hoodPID.setReference(0.25, ControlType.kPosition);
       //turret.hood.set(-0.3*rightY);
       //turret.disable();
-      turret.turret.set(0.3*turretInput);
       Robot.shooting = false;
     }
 
@@ -107,7 +107,22 @@ public class RunTurret extends CommandBase {
     Robot.deltaFlywheelVel = Robot.flywheelVel - Robot.lastFlywheelVel;
     Robot.lastFlywheelVel = Robot.flywheelVel;
     Robot.lastPOV = pov;
-    turret.turretEncoderDashboard.setDouble(turret.turret.getSelectedSensorPosition());
+    turret.turretEncoderDashboard.setDouble(turret.getPWMPosition());
+
+    double turretInput = Robot.controllerSecondary.getX(Hand.kLeft);
+    if(shootAgainstWall) {
+      if(!turret.isEnabled()) {
+        turret.setSetpoint(1640);
+        turret.enable();
+      }
+      turretInput = turret.lastTurretOutput;
+    } else {
+      if(turret.isEnabled()) {
+        turret.disable();
+      }
+    }
+
+    turret.turret.set(turretInput * 0.3);
   }
 
   // Called once the command ends or is interrupted.

@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -24,6 +26,7 @@ public class Turret extends PIDSubsystem {
   //public SpeedControllerGroup flywheel = new SpeedControllerGroup(flywheel1, flywheel2);
 
   public WPI_TalonSRX turret = new WPI_TalonSRX(8);
+  public double lastTurretOutput = 0.0;
 
   public CANSparkMax hood = new CANSparkMax(11, MotorType.kBrushless);
   public CANPIDController hoodPID = hood.getPIDController();
@@ -35,30 +38,46 @@ public class Turret extends PIDSubsystem {
 
   public NetworkTableEntry turretEncoderDashboard = Shuffleboard.getTab("Default").add("Turret Position", 0).getEntry();
 
+  SensorCollection sensors = turret.getSensorCollection();
+  volatile int lastValue = Integer.MIN_VALUE;
+
+  public int getPWMPosition() {
+    int raw = sensors.getPulseWidthRiseToFallUs();
+    if(raw == 0) {
+      int lastValue = this.lastValue;
+      if(lastValue == Integer.MIN_VALUE) {
+        return 0;
+      }
+      return lastValue;
+    }
+    int actualValue = Math.min(4096, raw-128);
+    lastValue = actualValue;
+    return actualValue;
+  }
+
   /**
    * Creates a new Turret.
    */
   public Turret() {
     super(
         // The PIDController used by the subsystem
-        new PIDController(0.005, 0.0, 0.0004));
+        new PIDController(0.005, 0.0, 0.0));
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    if(output < -0.3) {
-      output = -0.3;
+    if(output > 1.0) {
+      output = 1.0;
+    } else if(output < -1.0) {
+      output = -1.0;
     }
-    if(output > 0.3) {
-      output = 0.3;
-    }
-    turret.set(-output);
+    lastTurretOutput = output;
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    return Robot.camX;
+    return lastValue;
   }
 }

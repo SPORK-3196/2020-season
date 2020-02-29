@@ -23,7 +23,7 @@ public class Flywheel extends PIDSubsystem {
   public Flywheel() {
     super(
         // The PIDController used by the subsystem
-        new PIDController(2.0, 0.0, 1.0));
+        new PIDController(2.0, 0.0, 0.5));
   }
 
   @Override

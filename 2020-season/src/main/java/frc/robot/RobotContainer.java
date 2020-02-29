@@ -15,6 +15,7 @@ import frc.robot.subsystems.Flywheel;
 import frc.robot.commands.RunIndex;
 import frc.robot.subsystems.Index;
 import frc.robot.commands.RunTurret;
+import frc.robot.commands.SimpleAuto;
 import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -64,6 +65,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    return new SimpleAuto(drivetrain, turret, index, flywheel);
   }
 }

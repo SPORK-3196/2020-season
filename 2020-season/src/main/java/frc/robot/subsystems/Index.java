@@ -35,7 +35,7 @@ public class Index extends SubsystemBase {
   public boolean lastSensor0Value = false;
   boolean lastSensor1Value = false;
   boolean lastSensor5Value = false;
-  boolean loaded = false;
+  public boolean loaded = false;
 
   public static NetworkTableEntry counter_D = Shuffleboard.getTab("Default").add("Index", 0).getEntry();
   public static NetworkTableEntry waiting_D = Shuffleboard.getTab("Default").add("Waiting", false).getEntry();
@@ -52,7 +52,6 @@ public class Index extends SubsystemBase {
     lastSensor0Value = false;
     lastSensor1Value = false;
     lastSensor5Value = false;
-    loaded = false;
   }
 
   public void runMotors() {
@@ -72,9 +71,9 @@ public class Index extends SubsystemBase {
 
   public void runIntake() {
     boolean reverseIndex = Robot.controllerSecondary.getXButton();
-    /*if(reverseIndex) {
+    if(reverseIndex) {
       intake.set(-0.5); // Reverse intake
-    } else*/ if(waiting) {
+    } else if(waiting) {
       intake.set(0.0); // Run intake slower to avoid indexing problems
     } else if(intakeOut) {
       intake.set(0.8); // Run intake normally
@@ -112,8 +111,9 @@ public class Index extends SubsystemBase {
         loaded = false;
       }
 
-      if(Robot.flywheelVel > 269 || !loaded) {
+      if((Robot.flywheelVel > 269 && Math.abs(Robot.turretError) < 10) || !loaded) {
         runMotorsShooting();
+        reset();
       } else {
         stopMotors();
       }
@@ -131,6 +131,7 @@ public class Index extends SubsystemBase {
       firstStage.set(expel * -0.5);
       secondStage.set(expel * -0.5);
       reset();
+      loaded = false;
     }
 
     lastSensor0Value = getSensorValue(0);

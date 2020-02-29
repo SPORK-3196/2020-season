@@ -34,6 +34,7 @@ public class RunIndex extends CommandBase {
     index.intake.set(0.0);
     Index.intakeSolenoid1.set(false);
     Index.intakeSolenoid2.set(false);
+    index.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,7 +55,7 @@ public class RunIndex extends CommandBase {
       index.index();
     }
 
-    boolean resetIndex = Robot.controllerSecondary.getXButton();
+    boolean resetIndex = false;//Robot.controllerSecondary.getBumper(Hand.kRight);
     if(resetIndex) {
       index.reset();
     }
