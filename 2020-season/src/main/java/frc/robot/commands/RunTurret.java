@@ -84,10 +84,10 @@ public class RunTurret extends CommandBase {
       Robot.manualHoodOffset += 0.1;
     }
 
-    Robot.hoodTarget = (-0.0129 * Robot.camY) + 13.6 + Robot.manualHoodOffset;
+    Robot.hoodTarget = (-0.0129 * Robot.camY) + 13.6 - 1.8 + Robot.manualHoodOffset;
 
     if(shootAgainstWall) {
-      turret.hoodPID.setReference(3.5, ControlType.kPosition);
+      turret.hoodPID.setReference(2.0, ControlType.kPosition);
       Robot.shooting = true;
     } else if(shootLongRange) {
       // 15 is max hood value
@@ -122,6 +122,7 @@ public class RunTurret extends CommandBase {
       }
     }
 
+    Robot.turretError = (int)turret.getController().getPositionError();
     turret.turret.set(turretInput * 0.3);
   }
 

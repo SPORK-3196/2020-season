@@ -31,7 +31,7 @@ public class Index extends SubsystemBase {
 
   public static DigitalInput[] sensor = new DigitalInput[10];
   int counter = 0;
-  boolean waiting = false;
+  public boolean waiting = false;
   public boolean lastSensor0Value = false;
   boolean lastSensor1Value = false;
   boolean lastSensor5Value = false;
@@ -55,12 +55,12 @@ public class Index extends SubsystemBase {
   }
 
   public void runMotors() {
-    firstStage.set(0.4);
-    secondStage.set(0.55);
+    firstStage.set(0.32);
+    secondStage.set(0.45);
   }
 
   public void runMotorsShooting() {
-    firstStage.set(0.4);
+    firstStage.set(0.3);
     secondStage.set(0.6);
   }
 
@@ -111,7 +111,7 @@ public class Index extends SubsystemBase {
         loaded = false;
       }
 
-      if((Robot.flywheelVel > 269 && Math.abs(Robot.turretError) < 10) || !loaded) {
+      if((Robot.flywheelVel > 269 /*&& Math.abs(Robot.turretError) < 10*/) || !loaded) {
         runMotorsShooting();
         reset();
       } else {

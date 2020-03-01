@@ -29,7 +29,8 @@ public class Flywheel extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    flywheel1.set(output);
+    if(output < 0.0) { flywheel1.set(0.0); }
+    else { flywheel1.set(output); }
   }
 
   @Override

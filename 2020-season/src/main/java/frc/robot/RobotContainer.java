@@ -7,15 +7,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.commands.DriveForwardTimed;
 import frc.robot.commands.DriveWithJoystick;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.commands.RunIndex;
 import frc.robot.subsystems.Index;
 import frc.robot.commands.RunTurret;
-import frc.robot.commands.SimpleAuto;
 import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -35,6 +37,8 @@ public class RobotContainer {
   private final DriveWithJoystick driveWithJoystick = new DriveWithJoystick(drivetrain);
   private final RunIndex runIndex = new RunIndex(index);
   private final RunTurret runTurret = new RunTurret(turret, flywheel);
+
+  //private NetworkTableEntry autoSelect = Shuffleboard.getTab("Default").add("Shoot during auto?", true).getEntry();
 
 
   /**
@@ -65,6 +69,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new SimpleAuto(drivetrain, turret, index, flywheel);
+    return new DriveForwardTimed(drivetrain, 1.0);
   }
 }
