@@ -38,17 +38,17 @@ public class RunTurret extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    flywheel.flywheel2.follow(flywheel.flywheel1);
+    /*flywheel.flywheel2.follow(flywheel.flywheel1);
     flywheel.flywheel1.setInverted(true);
     flywheel.flywheel2.setInverted(InvertType.FollowMaster);
 
     //turret.setSetpoint(1640);
-    turret.disable();
 
     turret.hoodPID.setP(0.03);
     turret.hoodPID.setI(0.0);
     turret.hoodPID.setD(0.0);
-    turret.hoodPID.setOutputRange(-0.3, 0.3);
+    turret.hoodPID.setOutputRange(-0.3, 0.3);*/
+    turret.disable();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,9 +58,9 @@ public class RunTurret extends CommandBase {
   
     double hoodValue = turret.hood.getEncoder().getPosition();
     turret.hoodPos.setDouble(hoodValue);
-    turret.hoodPID.setP(turret.hoodP.getDouble(0.0));
+    /*turret.hoodPID.setP(turret.hoodP.getDouble(0.0));
     turret.hoodPID.setI(turret.hoodI.getDouble(0.0));
-    turret.hoodPID.setD(turret.hoodD.getDouble(0.0));
+    turret.hoodPID.setD(turret.hoodD.getDouble(0.0));*/
 
     Robot.flywheelVel = flywheel.flywheel1.getSelectedSensorVelocity();
 
@@ -75,7 +75,8 @@ public class RunTurret extends CommandBase {
     }
 
     boolean shootAgainstWall = Robot.controllerSecondary.getAButton();
-    boolean shootLongRange = Robot.controllerSecondary.getYButton();
+    boolean shootFromLine = Robot.controllerSecondary.getXButton();
+    boolean shootFromTrench = Robot.controllerSecondary.getYButton();
 
     int pov = Robot.controllerSecondary.getPOV();
     if(pov == 0 && Robot.lastPOV != 0) {
@@ -84,17 +85,27 @@ public class RunTurret extends CommandBase {
       Robot.manualHoodOffset += 0.1;
     }
 
-    Robot.hoodTarget = (-0.0129 * Robot.camY) + 13.6 - 1.8 + Robot.manualHoodOffset;
+    //Robot.hoodTarget = (-0.0129 * Robot.camY) + 13.6 - 1.8 + Robot.manualHoodOffset;
+    //Robot.hoodTarget = 9.4 + Robot.manualHoodOffset;
 
     if(shootAgainstWall) {
-      turret.hoodPID.setReference(2.0, ControlType.kPosition);
+      turret.hoodPID.setReference(1.8, ControlType.kPosition);
       Robot.shooting = true;
-    } else if(shootLongRange) {
+    } else if(shootFromLine) {
       // 15 is max hood value
-      turret.hoodPID.setReference(Robot.hoodTarget, ControlType.kPosition);
+      turret.hoodPID.setReference(9.3, ControlType.kPosition);
+      Robot.shooting = true;
+    } else if(shootFromTrench) {
+      // 15 is max hood value
+      turret.hoodPID.setReference(11.0 + Robot.manualHoodOffset, ControlType.kPosition);
       Robot.shooting = true;
     } else {
-      turret.hoodPID.setReference(0.25, ControlType.kPosition);
+      if(hoodValue > 0.1) {
+        turret.hoodPID.setReference(0.0, ControlType.kPosition);
+      } else {
+        turret.hood.set(-0.025);
+      }
+
       //turret.hood.set(-0.3*rightY);
       //turret.disable();
       Robot.shooting = false;
@@ -123,7 +134,7 @@ public class RunTurret extends CommandBase {
     }
 
     Robot.turretError = (int)turret.getController().getPositionError();
-    turret.turret.set(turretInput * 0.3);
+    turret.turret.set(turretInput * 0.25);
   }
 
   // Called once the command ends or is interrupted.

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.InvertType;
 
 public class Flywheel extends PIDSubsystem {
   
@@ -24,6 +25,10 @@ public class Flywheel extends PIDSubsystem {
     super(
         // The PIDController used by the subsystem
         new PIDController(2.0, 0.0, 0.5));
+    
+    flywheel2.follow(flywheel1);
+    flywheel1.setInverted(true);
+    flywheel2.setInverted(InvertType.FollowMaster);
   }
 
   @Override

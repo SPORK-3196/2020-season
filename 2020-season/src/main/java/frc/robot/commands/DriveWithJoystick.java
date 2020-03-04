@@ -37,7 +37,7 @@ public class DriveWithJoystick extends CommandBase {
     double leftX = Robot.controllerDrive.getX(Hand.kLeft);
     double leftY = Robot.controllerDrive.getY(Hand.kLeft);
 
-    drivetrain.drivetrain.arcadeDrive(leftY * -0.8, leftX * 0.5);
+    drivetrain.drivetrain.arcadeDrive(leftY * -0.7, leftX * 0.6);
 
 
     boolean aButton = Robot.controllerDrive.getAButton();

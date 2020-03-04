@@ -81,6 +81,8 @@ public class Robot extends TimedRobot {
     } catch(Exception e) {
       System.out.println(e.toString());
     }
+
+    compressor.clearAllPCMStickyFaults();
   }
 
   /**

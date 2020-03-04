@@ -34,7 +34,7 @@ public class Index extends SubsystemBase {
   public boolean waiting = false;
   public boolean lastSensor0Value = false;
   boolean lastSensor1Value = false;
-  boolean lastSensor5Value = false;
+  public boolean lastSensor5Value = false;
   public boolean loaded = false;
 
   public static NetworkTableEntry counter_D = Shuffleboard.getTab("Default").add("Index", 0).getEntry();
@@ -70,8 +70,8 @@ public class Index extends SubsystemBase {
   }
 
   public void runIntake() {
-    boolean reverseIndex = Robot.controllerSecondary.getXButton();
-    if(reverseIndex) {
+    boolean reverseIntake = Robot.controllerSecondary.getBumper(Hand.kRight);
+    if(reverseIntake) {
       intake.set(-0.5); // Reverse intake
     } else if(waiting) {
       intake.set(0.0); // Run intake slower to avoid indexing problems
@@ -151,6 +151,11 @@ public class Index extends SubsystemBase {
         sensor[i] = new DigitalInput(i);
       }
     }
+    
+    intakeOut = false;
+    intake.set(0.0);
+    Index.intakeSolenoid1.set(false);
+    Index.intakeSolenoid2.set(false);
   }
 
   @Override

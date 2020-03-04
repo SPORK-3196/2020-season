@@ -61,16 +61,24 @@ public class Turret extends PIDSubsystem {
   public Turret() {
     super(
         // The PIDController used by the subsystem
-        new PIDController(0.005, 0.0, 0.0));
+        new PIDController(0.005, 0.0, 0.00025));
+
+    //turret.setSetpoint(1640);
+    turret.disable();
+
+    hoodPID.setP(0.03);
+    hoodPID.setI(0.0);
+    hoodPID.setD(0.0);
+    hoodPID.setOutputRange(-0.3, 0.3);
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
     // Use the output here
-    if(output > 1.0) {
-      output = 1.0;
-    } else if(output < -1.0) {
-      output = -1.0;
+    if(output > 0.5) {
+      output = 0.5;
+    } else if(output < -0.5) {
+      output = -0.5;
     }
     lastTurretOutput = output;
   }

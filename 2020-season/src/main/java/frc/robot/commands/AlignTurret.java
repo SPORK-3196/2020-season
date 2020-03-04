@@ -7,70 +7,54 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Turret;
 import frc.robot.Robot;
-import frc.robot.subsystems.Index;
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.revrobotics.ControlType;
 
-public class RunIndex extends CommandBase {
+public class AlignTurret extends CommandBase {
 
-  Index index = new Index();
+  Turret turret;
+  int turretTarget;
+  double hoodTarget;
 
   /**
-   * Creates a new RunIndex.
+   * Creates a new AlignTurret.
    */
-  public RunIndex(Index index_p) {
-    index = index_p;
-    addRequirements(index);
-
+  public AlignTurret(Turret p_turret, int p_turretTarget, double p_hoodTarget) {
     // Use addRequirements() here to declare subsystem dependencies.
+    turret = p_turret;
+    turretTarget = p_turretTarget;
+    hoodTarget = p_hoodTarget;
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    index.reset();
+    turret.setSetpoint(turretTarget);
+    turret.enable();
+
+    turret.hoodPID.setReference(hoodTarget, ControlType.kPosition);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double hoodValue = turret.hood.getEncoder().getPosition();
+    turret.hoodPos.setDouble(hoodValue);
 
-    /*double leftY = Robot.controllerSecondary.getY(Hand.kLeft);
-    if(leftY > -0.1 && leftY < 0.1) leftY = 0.0;
-
-    double rightX = Robot.controllerSecondary.getX(Hand.kRight);
-    if(rightX > -0.1 && rightX < 0.1) rightX = 0.0;
-
-    index.firstStage.set(-rightX);
-    index.secondStage.set(-leftY);*/
-
-
-    if(!index.lastSensor0Value && index.getSensorValue(0) && !Robot.shooting){
-      index.index();
-    }
-
-    boolean resetIndex = false;//Robot.controllerSecondary.getBumper(Hand.kRight);
-    if(resetIndex) {
-      index.reset();
-    }
-
-    boolean toggleIntake = Robot.controllerSecondary.getBButtonPressed();
-    if(toggleIntake) {
-      index.intakeOut = !index.intakeOut;
-
-      /*if(!index.intakeOut) {
-        index.waiting = false;
-      }*/
-    }
-
-    index.run();
+    turret.turretEncoderDashboard.setDouble(turret.getPWMPosition());
+    turret.turret.set(0.5 * turret.lastTurretOutput);
+    Robot.turretError = (int)turret.getController().getPositionError();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    turret.disable();
+    // TODO: Test turret.turret.set(0.0);
+    System.out.println("Turret aligned!");
   }
 
   // Returns true when the command should end.
