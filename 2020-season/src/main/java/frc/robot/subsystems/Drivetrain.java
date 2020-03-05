@@ -37,6 +37,27 @@ public class Drivetrain extends SubsystemBase {
   public Solenoid driveCooler = new Solenoid(50, 4);
 
   public static NetworkTableEntry[] falconTempDashboard = new NetworkTableEntry[4];
+  public static NetworkTableEntry rightEncoderDashboard = Shuffleboard.getTab("Default").add("Right Falcon Encoder", 0.0).getEntry();
+  public static NetworkTableEntry leftEncoderDashboard = Shuffleboard.getTab("Default").add("Left Falcon Encoder", 0.0).getEntry();
+  public static NetworkTableEntry leftRightDifferenceDashboard = Shuffleboard.getTab("Default").add("LeftRight Difference", 0.0).getEntry();
+
+  public int rightEncoderOffset = 0;
+  public int leftEncoderOffset = 0;
+  public int leftRightDifference = 0;
+
+  public int getRightEncoderPosition() {
+    return -frontRight.getSelectedSensorPosition() - rightEncoderOffset;
+  }
+
+  public int getLeftEncoderPosition() {
+    return frontLeft.getSelectedSensorPosition() - leftEncoderOffset;
+  }
+
+  public void resetEncoders() {
+    rightEncoderOffset += getRightEncoderPosition();
+    leftEncoderOffset += getLeftEncoderPosition();
+    leftRightDifference = getLeftEncoderPosition() - getRightEncoderPosition();
+  }
 
   /**
    * Creates a new Drivetrain.
@@ -48,6 +69,8 @@ public class Drivetrain extends SubsystemBase {
     falconTempDashboard[1] = Shuffleboard.getTab("Default").add("RL Falcon Temp", 0.0).getEntry();
     falconTempDashboard[2] = Shuffleboard.getTab("Default").add("FR Falcon Temp", 0.0).getEntry();
     falconTempDashboard[3] = Shuffleboard.getTab("Default").add("RR Falcon Temp", 0.0).getEntry();
+
+    resetEncoders();
 
     /*ArrayList<TalonFX> fx_s = new ArrayList<TalonFX>();
     fx_s.add(frontLeft);
@@ -61,5 +84,10 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    rightEncoderDashboard.setDouble(getRightEncoderPosition());
+    leftEncoderDashboard.setDouble(getLeftEncoderPosition());
+
+    leftRightDifference = getLeftEncoderPosition() - getRightEncoderPosition();
+    leftRightDifferenceDashboard.setDouble(leftRightDifference);
   }
 }

@@ -7,7 +7,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Index;
@@ -15,7 +15,7 @@ import frc.robot.subsystems.Index;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class ShootFromLine extends ParallelCommandGroup {
+public class ShootFromLine extends ParallelRaceGroup {
   /**
    * Creates a new ShootFromLine.
    */
@@ -23,7 +23,7 @@ public class ShootFromLine extends ParallelCommandGroup {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());super();
     super(
-      new AlignTurret(p_turret, 3300, 9.5),
+      new AlignTurret(p_turret, 3300, 10.0),
       new RunFlywheel(p_flywheel, 270),
       new ShootBalls(p_index, 3)
     );

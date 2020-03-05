@@ -7,16 +7,21 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
 import frc.robot.Robot;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 
 public class AlignTurret extends CommandBase {
 
   Turret turret;
   int turretTarget;
   double hoodTarget;
+
+  boolean hoodZeroed = false;
+  boolean turretLocked = false;
 
   /**
    * Creates a new AlignTurret.
@@ -35,7 +40,11 @@ public class AlignTurret extends CommandBase {
     turret.setSetpoint(turretTarget);
     turret.enable();
 
-    turret.hoodPID.setReference(hoodTarget, ControlType.kPosition);
+    System.out.print("Hood target: ");
+    System.out.println(hoodTarget);
+    turret.hood.set(-0.025);
+
+    Robot.turretError = (int)turret.getController().getPositionError();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,17 +53,37 @@ public class AlignTurret extends CommandBase {
     double hoodValue = turret.hood.getEncoder().getPosition();
     turret.hoodPos.setDouble(hoodValue);
 
-    turret.turretEncoderDashboard.setDouble(turret.getPWMPosition());
-    turret.turret.set(0.5 * turret.lastTurretOutput);
+    if(turret.hood.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen).get()) {
+      hoodZeroed = true;
+    }
+
+    if(hoodZeroed) {
+      turret.hood.set(0.0);
+      turret.hoodPID.setReference(hoodTarget, ControlType.kPosition);
+    } else {
+      turret.hood.set(-0.025);
+    }
+
     Robot.turretError = (int)turret.getController().getPositionError();
+    if(Math.abs(Robot.turretError) < 10) {
+      turretLocked = true;
+    }
+
+    if(turretLocked) {
+      turret.turret.set(0.0);
+    } else {
+      turret.turret.set(0.5*turret.lastTurretOutput);
+    }
+
+    turret.turretEncoderDashboard.setDouble(turret.getPWMPosition());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     turret.disable();
-    // TODO: Test turret.turret.set(0.0);
-    System.out.println("Turret aligned!");
+    turret.turret.set(0.0);
+    turret.hoodPID.setReference(0.25, ControlType.kPosition);
   }
 
   // Returns true when the command should end.
