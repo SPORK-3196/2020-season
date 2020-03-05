@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
@@ -50,12 +52,16 @@ public class DriveToPickup extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drivetrain.drivetrain.arcadeDrive(0.0, 0.0);
+    
+    drivetrain.frontRight.setNeutralMode(NeutralMode.Brake);
+    drivetrain.rearRight.setNeutralMode(NeutralMode.Brake);
+    drivetrain.frontLeft.setNeutralMode(NeutralMode.Brake);
+    drivetrain.rearLeft.setNeutralMode(NeutralMode.Brake);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return drivetrain.frontRight.getSelectedSensorPosition() > 1000;
-    return drivetrain.getRightEncoderPosition() > 110000;
+    return drivetrain.getRightEncoderPosition() > 125000; //110000
   }
 }

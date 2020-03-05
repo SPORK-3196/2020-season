@@ -7,6 +7,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
@@ -29,6 +31,11 @@ public class DriveWithJoystick extends CommandBase {
   @Override
   public void initialize() {
     drivetrain.drivetrain.setDeadband(0.08);
+
+    drivetrain.frontRight.setNeutralMode(NeutralMode.Coast);
+    drivetrain.rearRight.setNeutralMode(NeutralMode.Coast);
+    drivetrain.frontLeft.setNeutralMode(NeutralMode.Coast);
+    drivetrain.rearLeft.setNeutralMode(NeutralMode.Coast);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
