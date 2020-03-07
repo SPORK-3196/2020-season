@@ -7,7 +7,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.Climber;
 
 public class RunClimber extends CommandBase {
@@ -17,18 +19,36 @@ public class RunClimber extends CommandBase {
   /**
    * Creates a new RunClimber.
    */
-  public RunClimber() {
+  public RunClimber(Climber p_climber) {
     // Use addRequirements() here to declare subsystem dependencies.
+    climber = p_climber;
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    climber.left.set(0.0);
+    climber.right.set(0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(Robot.controllerDrive.getBButton()) {
+      climber.left.set(0.5);
+      climber.right.set(0.5);
+    }
+
+    double rightDownInput = Robot.controllerDrive.getTriggerAxis(Hand.kRight);
+    if(rightDownInput > 0.05) {
+      climber.right.set(-rightDownInput);
+    }
+
+    double leftDownInput = Robot.controllerDrive.getTriggerAxis(Hand.kLeft);
+    if(leftDownInput > 0.05) {
+      climber.left.set(-leftDownInput);
+    }
   }
 
   // Called once the command ends or is interrupted.

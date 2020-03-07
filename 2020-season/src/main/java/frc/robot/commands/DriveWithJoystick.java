@@ -47,8 +47,9 @@ public class DriveWithJoystick extends CommandBase {
     drivetrain.drivetrain.arcadeDrive(leftY * -0.7, leftX * 0.7);
 
 
-    /*boolean aButton = Robot.controllerDrive.getAButton();
-    drivetrain.driveCooler.set(aButton);*/
+    boolean cool = Robot.controllerDrive.getXButton();
+    Drivetrain.driveCooler.set(cool);
+
 
     if(Robot.controllerDrive.getAButton()) {
       drivetrain.frontLeft.setNeutralMode(NeutralMode.Brake);
