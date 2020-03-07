@@ -23,7 +23,7 @@ public class ShootFromLine extends ParallelRaceGroup {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());super();
     super(
-      new AlignTurret(p_turret, 3300, 10.0),
+      new AlignTurret(p_turret, 3300, 10.4),
       new RunFlywheel(p_flywheel, 270),
       new ShootBalls(p_index, 3)
     );

@@ -76,6 +76,8 @@ public class AlignTurret extends CommandBase {
     }
 
     turret.turretEncoderDashboard.setDouble(turret.getPWMPosition());
+    Robot.hoodTarget = hoodTarget;
+    turret.hoodPos.setDouble(hoodValue);
   }
 
   // Called once the command ends or is interrupted.

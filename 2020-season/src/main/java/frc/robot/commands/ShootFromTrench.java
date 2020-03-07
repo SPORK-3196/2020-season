@@ -23,7 +23,7 @@ public class ShootFromTrench extends ParallelRaceGroup {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());super();
     super(
-      new AlignTurret(p_turret, 3475, 11.0),
+      new AlignTurret(p_turret, 3475, 11.1),
       new RunFlywheel(p_flywheel, 270),
       new ShootBalls(p_index, 2)
     );

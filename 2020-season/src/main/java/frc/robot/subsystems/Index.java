@@ -60,7 +60,7 @@ public class Index extends SubsystemBase {
   }
 
   public void runMotorsShooting() {
-    firstStage.set(0.8);
+    firstStage.set(0.7);
     secondStage.set(1.0);
   }
 
@@ -76,7 +76,7 @@ public class Index extends SubsystemBase {
     } else if(waiting) {
       intake.set(0.0); // Run intake slower to avoid indexing problems
     } else if(intakeOut) {
-      intake.set(0.85); // Run intake normally
+      intake.set(0.5); // Run intake normally
     } else {
       intake.set(0.0); // Stop intake because it's retracted
     }

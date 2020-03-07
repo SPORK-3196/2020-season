@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Turret;
+import java.lang.Math;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -121,12 +122,22 @@ public class RunTurret extends CommandBase {
     turret.turretEncoderDashboard.setDouble(turret.getPWMPosition());
 
     double turretInput = Robot.controllerSecondary.getX(Hand.kLeft);
+    double adjustedTurretInput = 0.0;
+
+    if(turretInput > 0.03) {
+      adjustedTurretInput = (0.4 * Math.log(turretInput)) + 1.0;
+      if(adjustedTurretInput < 0.0) adjustedTurretInput = 0.0;
+    } else if(turretInput < -0.03) {
+      adjustedTurretInput = -((0.3 * Math.log(-turretInput)) + 1);
+      if(adjustedTurretInput > 0.0) adjustedTurretInput = 0.0;
+    }
+
     if(shootAgainstWall) {
       if(!turret.isEnabled()) {
         turret.setSetpoint(1640);
         turret.enable();
       }
-      turretInput = turret.lastTurretOutput;
+      adjustedTurretInput = turret.lastTurretOutput;
     } else {
       if(turret.isEnabled()) {
         turret.disable();
@@ -134,7 +145,11 @@ public class RunTurret extends CommandBase {
     }
 
     Robot.turretError = (int)turret.getController().getPositionError();
-    turret.turret.set(turretInput * 0.25);
+
+    turret.turretInputDashboard.setDouble(turretInput);
+    turret.adjustedInputDashboard.setDouble(adjustedTurretInput);
+
+    turret.turret.set(adjustedTurretInput * 0.25);
   }
 
   // Called once the command ends or is interrupted.

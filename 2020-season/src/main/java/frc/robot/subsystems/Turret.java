@@ -38,6 +38,9 @@ public class Turret extends PIDSubsystem {
 
   public NetworkTableEntry turretEncoderDashboard = Shuffleboard.getTab("Default").add("Turret Position", 0).getEntry();
 
+  public NetworkTableEntry turretInputDashboard = Shuffleboard.getTab("Default").add("Turret Input", 0.0).getEntry();
+  public NetworkTableEntry adjustedInputDashboard = Shuffleboard.getTab("Default").add("Adjusted Input", 0.0).getEntry();
+
   SensorCollection sensors = turret.getSensorCollection();
   volatile int lastValue = Integer.MIN_VALUE;
 

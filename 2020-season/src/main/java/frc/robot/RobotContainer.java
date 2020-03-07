@@ -39,7 +39,7 @@ public class RobotContainer {
   private final RunIndex runIndex = new RunIndex(index);
   private final RunTurret runTurret = new RunTurret(turret, flywheel);
 
-  //private NetworkTableEntry autoSelect = Shuffleboard.getTab("Default").add("Shoot during auto?", true).getEntry();
+  private NetworkTableEntry autoSelect = Shuffleboard.getTab("Default").add("Shoot during auto?", true).getEntry();
 
 
   /**
@@ -70,6 +70,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new FiveBallAuto(turret, flywheel, index, drivetrain);
+    if(autoSelect.getBoolean(true)) {
+      return new FiveBallAuto(turret, flywheel, index, drivetrain);
+    } else {
+      return new DriveForwardTimed(drivetrain, 1.0);
+    }
   }
 }

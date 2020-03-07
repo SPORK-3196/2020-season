@@ -44,11 +44,23 @@ public class DriveWithJoystick extends CommandBase {
     double leftX = Robot.controllerDrive.getX(Hand.kLeft);
     double leftY = Robot.controllerDrive.getY(Hand.kLeft);
 
-    drivetrain.drivetrain.arcadeDrive(leftY * -0.7, leftX * 0.6);
+    drivetrain.drivetrain.arcadeDrive(leftY * -0.7, leftX * 0.7);
 
 
-    boolean aButton = Robot.controllerDrive.getAButton();
-    drivetrain.driveCooler.set(aButton);
+    /*boolean aButton = Robot.controllerDrive.getAButton();
+    drivetrain.driveCooler.set(aButton);*/
+
+    if(Robot.controllerDrive.getAButton()) {
+      drivetrain.frontLeft.setNeutralMode(NeutralMode.Brake);
+      drivetrain.rearLeft.setNeutralMode(NeutralMode.Brake);
+      drivetrain.frontRight.setNeutralMode(NeutralMode.Brake);
+      drivetrain.rearRight.setNeutralMode(NeutralMode.Brake);
+    } else {
+      drivetrain.frontLeft.setNeutralMode(NeutralMode.Coast);
+      drivetrain.rearLeft.setNeutralMode(NeutralMode.Coast);
+      drivetrain.frontRight.setNeutralMode(NeutralMode.Coast);
+      drivetrain.rearRight.setNeutralMode(NeutralMode.Coast);
+    }
 
     Drivetrain.falconTempDashboard[0].setDouble(drivetrain.frontLeft.getTemperature());
     Drivetrain.falconTempDashboard[1].setDouble(drivetrain.rearLeft.getTemperature());
